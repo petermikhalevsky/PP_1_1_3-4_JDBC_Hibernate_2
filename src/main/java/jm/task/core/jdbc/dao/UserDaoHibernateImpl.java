@@ -63,7 +63,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void removeUserById(long id) {
         try (Session session = Util.getSessionFactory().getCurrentSession()) {
             session.beginTransaction();
-            session.createQuery("DELETE FROM users WHERE id = " + id).executeUpdate();
+            session.createNativeQuery("DELETE FROM users WHERE id = " + id).executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             System.out.println("User deleting Error!");
@@ -78,10 +78,9 @@ public class UserDaoHibernateImpl implements UserDao {
             list = session.createQuery("FROM User"
                      ).getResultList();
             session.getTransaction().commit();
-            return list;
-        }catch (Exception e) {
-            System.out.println("Selection from DB Error!");
+
         }
+        return list;
     }
 
     @Override

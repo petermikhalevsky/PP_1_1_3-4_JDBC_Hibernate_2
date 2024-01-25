@@ -4,7 +4,7 @@ import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 
 public class Main {
     public static void main(String[] args) {
-        // реализуйте алгоритм здесь
+
         UserDaoHibernateImpl userDaoHibernate = new UserDaoHibernateImpl();
         userDaoHibernate.createUsersTable();
         userDaoHibernate.saveUser("Ivan", "Ivanov", (byte) 25);
@@ -17,7 +17,7 @@ public class Main {
         System.out.println(userDaoHibernate.getAllUsers());
         userDaoHibernate.cleanUsersTable();
         System.out.println(userDaoHibernate.getAllUsers());
-        //userDaoHibernate.dropUsersTable();
-        //System.out.println(userDao.getAllUsers());
+        userDaoHibernate.dropUsersTable();
+
     }
 }
