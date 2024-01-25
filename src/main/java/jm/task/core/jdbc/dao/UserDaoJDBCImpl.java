@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    public static final String CREATE = "CREATE TABLE IF NOT EXISTS USERS ";
+    private static final String CREATE = "CREATE TABLE IF NOT EXISTS USERS ";
     private static final String TABLE = "(id INTEGER not NULL AUTO_INCREMENT, name VARCHAR(30), lastName VARCHAR(30), age INTEGER, PRIMARY KEY ( id ))";
 
     public UserDaoJDBCImpl() {
@@ -19,7 +19,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.execute(CREATE + TABLE);
         } catch (SQLException e){
-            throw new RuntimeException();
+            System.out.println("Connection error!");
         }
     }
 
@@ -27,7 +27,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.execute("DROP TABLE IF EXISTS USERS");
         } catch (SQLException e) {
-            throw new RuntimeException();
+            System.out.println("Connection error!");
         }
 
     }
@@ -41,7 +41,7 @@ public class UserDaoJDBCImpl implements UserDao {
                                           preparedStatement.executeUpdate();
             System.out.printf("User %s added\n", name);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Connection error!");
         }
 
     }
@@ -50,7 +50,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.execute(String.format("DELETE FROM USERS WHERE id = %d;", id));
         } catch (SQLException e) {
-            throw new RuntimeException();
+            System.out.println("Connection error!");
         }
 
     }
@@ -59,7 +59,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.execute("DELETE FROM users;");
         } catch (SQLException e) {
-            throw new RuntimeException();
+            System.out.println("Connection error!");
         }
     }
 
@@ -77,7 +77,7 @@ public List<User> getAllUsers() {
 
             }
         } catch (SQLException e) {
-            throw new RuntimeException();
+            System.out.println("Connection error!");
         }
         return list;
     }
