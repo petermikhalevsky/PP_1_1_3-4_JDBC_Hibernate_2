@@ -3,6 +3,7 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,50 +48,66 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
         User user = new User(name, lastName, age);
+        Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
-            session.beginTransaction();
-            //session.persist(user);
+            transaction = session.beginTransaction();
             session.save(user);
-            session.getTransaction().commit();
+            transaction.commit();
 
         } catch (Exception e) {
             System.out.println("Saving User Error!");
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
 
     }
 
     @Override
     public void removeUserById(long id) {
+        Transaction transaction = null;
         try (Session session = Util.getSessionFactory().getCurrentSession()) {
-            session.beginTransaction();
+            transaction = session.beginTransaction();
             session.createNativeQuery("DELETE FROM users WHERE id = " + id).executeUpdate();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             System.out.println("User deleting Error!");
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
     @Override
     public List<User> getAllUsers() {
         List<User> list = new ArrayList<>();
+        Transaction transaction = null;
         try (Session session = Util.getSessionFactory().getCurrentSession()){
-            session.beginTransaction();
+            transaction = session.beginTransaction();
             list = session.createQuery("FROM User"
                      ).getResultList();
-            session.getTransaction().commit();
+            transaction.commit();
 
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
         return list;
     }
 
     @Override
     public void cleanUsersTable() {
+        Transaction transaction = null;
         try (Session session = Util.getSessionFactory().getCurrentSession()){
-            session.beginTransaction();
+            transaction = session.beginTransaction();
             session.createNativeQuery("TRUNCATE TABLE users").executeUpdate();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (Exception e) {
             System.out.println("Cleaning table Error!");
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 }
